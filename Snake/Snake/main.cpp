@@ -14,7 +14,7 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_EVENT ev;
 FILE *f;
 
-#define FREQ 5
+#define FREQ 10
 #define TEXT_SIZE 17
 #define ROZMIAR_KLOCKA 13
 char direction = 4;
@@ -41,7 +41,7 @@ int initialize_allegro()
 		return -1;
 	}
 
-	display = al_create_display(600, 300);
+	display = al_create_display(50+ROZMIAR_KLOCKA*map_size+200, 50+ROZMIAR_KLOCKA*map_size);
 	if(!display) 
 	{
 		al_show_native_message_box(display, "Error", "Error", "failed to create display!", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -147,8 +147,12 @@ int change_snake_position()
 		}
 	fprintf(f, "new head: x=%d y=%d\n", snake_head->x, snake_head->y);
 
-	if(playground[snake_head->y][snake_head->x] == 1) //snake meets itself
+	if(playground[snake_head->y][snake_head->x] == 1)	//snake meets itself
+	{
+		al_draw_filled_rectangle(20+snake_head->x*ROZMIAR_KLOCKA, 20+snake_head->y*ROZMIAR_KLOCKA, 20+snake_head->x*ROZMIAR_KLOCKA+ROZMIAR_KLOCKA-1, 20+snake_head->y*ROZMIAR_KLOCKA+ROZMIAR_KLOCKA-1, al_map_rgb(255, 200, 200));
+		al_flip_display();
 		return 0; //game over
+	}
 	else if(playground[snake_head->y][snake_head->x] == 2) //food eaten
 	{
 		playground[snake_head->y][snake_head->x] = 1;
@@ -213,6 +217,23 @@ int main()
 	al_flip_display();
 	srand(time(NULL));
 
+	al_clear_to_color(al_map_rgb(0,0,0));
+#define TEXT_X_POS(x) 50+x*20
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50, TEXT_X_POS(1), 0, "SNAKE v0.5 by Baftek");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), 50, TEXT_X_POS(3), 0, "Speed: %dHz", FREQ);
+	al_draw_textf(font, al_map_rgb(255, 255, 255), 50, TEXT_X_POS(4), 0, "Map size: %d", map_size);
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50, TEXT_X_POS(5), 0, "Borders doesn't exist");
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50, TEXT_X_POS(7), 0, "Press ANY KEY to begin");
+	al_flip_display();
+	while(1)
+	{
+		al_wait_for_event(event_queue, &ev);
+		if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (ev.type == ALLEGRO_EVENT_KEY_DOWN && (ev.keyboard.keycode == ALLEGRO_KEY_Q || ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE)))
+			return 0;  //exit program
+		else if(ev.type == ALLEGRO_EVENT_KEY_DOWN)
+			break;
+	}
+
 	create_map();
 	al_start_timer(timer);
 	while(1)
@@ -242,9 +263,9 @@ int main()
 					if(direction != 2)
 					direction = 4; break;
 				}
+			al_set_timer_count(timer, 0);
 		}
-			//al_flip_display();
-		if(ev.type == ALLEGRO_EVENT_TIMER)
+		else if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
 			if(!change_snake_position())
 				break;
@@ -252,8 +273,9 @@ int main()
 		fprintf(f, "dir: %d\n", direction);
 	}
 	//game over
-	al_clear_to_color(al_map_rgb(0,0,0));
-	al_draw_text(font, al_map_rgb(255, 255, 255), 50, 50, 0, "GAME OVER");
+	//al_clear_to_color(al_map_rgb(0,0,0));
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50+ROZMIAR_KLOCKA*map_size+30, 50, 0, "GAME OVER");
+	al_flip_display();
 	while(!(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (ev.type == ALLEGRO_EVENT_KEY_DOWN && (ev.keyboard.keycode == ALLEGRO_KEY_Q || ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE))))
 		al_wait_for_event(event_queue, &ev);
 	fclose(f);
