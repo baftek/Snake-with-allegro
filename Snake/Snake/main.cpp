@@ -14,6 +14,7 @@ ALLEGRO_TIMER *timer = NULL;
 ALLEGRO_EVENT ev;
 FILE *f;
 
+#define FREQ 5
 #define TEXT_SIZE 17
 #define ROZMIAR_KLOCKA 13
 char direction = 4;
@@ -68,7 +69,7 @@ int initialize_allegro()
 		return -1;
 	}
 
-	timer = al_create_timer(1.0 / 1);
+	timer = al_create_timer(1.0 / FREQ);
 	if(!timer) 
 	{
 		al_destroy_display(display);
@@ -81,6 +82,7 @@ int initialize_allegro()
 	al_install_keyboard();
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	return 1;
 }
 
@@ -237,7 +239,7 @@ int main()
 				}
 		}
 			//al_flip_display();
-		if(ev.type = ALLEGRO_EVENT_TIMER)
+		if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
 			if(!change_snake_position())
 				break;
