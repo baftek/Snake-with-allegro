@@ -123,6 +123,7 @@ int create_map()
 
 int change_snake_position()
 {
+	char snake_ass_removal_delay = 0;
 	fprintf(f, "change()\n");
 	//moving head
 	snake_head->next = (struct snake_chain*)malloc(sizeof(struct snake_chain));
@@ -157,16 +158,20 @@ int change_snake_position()
 			y = rand() % map_size;
 		} while(playground[y][x] > 0 || x==0 || x==map_size-1 || y==0 || y==map_size-1);
 		playground[y][x] = 2;
+		snake_ass_removal_delay = 1;
 		fprintf(f, "new food: x=%d y=%d\n", x, y);
 	}
 	playground[snake_head->y][snake_head->x] = 1; //snake here
 
+	if(!snake_ass_removal_delay)
+	{
 	//removing ass
 	playground[snake_ass->y][snake_ass->x] = 0; //snake not here
 	fprintf(f, "assR: x=%d y=%d\nn", snake_ass->x, snake_ass->y);
 	snake_ass = snake_ass->next;
 	free(snake_ass->previous);
 	snake_ass->previous = NULL;
+	}
 	return 1; //game continues
 }
 
@@ -197,7 +202,7 @@ int main()
 		return 0;
 
 	//creating gamemap dyn. array
-	playground = (char**)calloc(map_size+1, sizeof(char));
+	playground = (char**)calloc(map_size, sizeof(char*));
 	for(int i=0; i<map_size; i++)
 	{
 		playground[i] = (char*)calloc(1, sizeof(char));
@@ -213,7 +218,7 @@ int main()
 	while(1)
 	{
 		draw_game();
-		al_flush_event_queue(event_queue);
+		//al_flush_event_queue(event_queue);
 		al_wait_for_event(event_queue, &ev);
 
 		if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (ev.type == ALLEGRO_EVENT_KEY_DOWN && (ev.keyboard.keycode == ALLEGRO_KEY_Q || ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE)))
