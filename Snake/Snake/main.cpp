@@ -22,12 +22,12 @@ char **playground;
 struct snake_chain *snake_head;
 struct snake_chain *snake_ass;
 char borders_exist = 0;
-int map_size = 20;
+int map_size = 40;
 
 struct snake_chain
 {
-	char x;
-	char y;
+	unsigned int x;
+	unsigned int y;
 	struct snake_chain *previous;
 	struct snake_chain *next;
 };
@@ -155,7 +155,7 @@ int change_snake_position()
 	}
 	else if(playground[snake_head->y][snake_head->x] == 2) //food eaten
 	{
-		playground[snake_head->y][snake_head->x] = 1;
+		playground[snake_head->y][snake_head->x] = 1;// now snake here
 		int x, y;
 		do {		// generate new food where snake is not now
 			x = rand() % map_size;
@@ -209,7 +209,7 @@ int main()
 	playground = (char**)calloc(map_size, sizeof(char*));
 	for(int i=0; i<map_size; i++)
 	{
-		playground[i] = (char*)calloc(1, sizeof(char));
+		playground[i] = (char*)calloc(map_size, sizeof(char));
 	}
  
 	al_init_primitives_addon();
