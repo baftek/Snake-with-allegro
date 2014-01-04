@@ -156,17 +156,17 @@ int change_snake_position()
 		switch(direction)
 		{
 		case 1: //up
-			if(snake_head->y == 0) return 0;
-			snake_head->y = (snake_head->y == 0 ? map_size-1 : snake_head->y-1); break;
+			if(snake_head->y == 0) return 0; //border were hit = game over
+			snake_head->y = snake_head->y-1; break;
 		case 2: //left
 			if(snake_head->x == 0) return 0;
-			snake_head->x = (snake_head->x == 0 ? map_size-1 : snake_head->x-1); break;
+			snake_head->x = snake_head->x-1; break;
 		case 3: //down
 			if(snake_head->y == map_size-1) return 0;
-			snake_head->y = (snake_head->y == map_size-1 ? 0 : snake_head->y+1); break;
+			snake_head->y = snake_head->y+1; break;
 		case 4: //right
 			if(snake_head->x == map_size-1) return 0;
-			snake_head->x = (snake_head->x == map_size-1 ? 0 : snake_head->x+1); break;
+			snake_head->x = snake_head->x+1; break;
 		//default: 
 		}
 	}
