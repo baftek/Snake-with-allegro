@@ -304,6 +304,7 @@ int main()
 	{
 		playground[i] = (char*)calloc(map_size, sizeof(char));
 	}
+
 restart:
 	create_map();
 	al_start_timer(timer);
@@ -360,12 +361,19 @@ restart:
 	//game over
 	//al_clear_to_color(al_map_rgb(0,0,0));
 	al_draw_text(font, al_map_rgb(255, 100, 100), 50+ROZMIAR_KLOCKA*map_size+30, 150, 0, "GAME OVER");
-	al_draw_text(font, al_map_rgb(255, 100, 100), 50+ROZMIAR_KLOCKA*map_size+30, 170, 0, "Once again? -> Y");
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50+ROZMIAR_KLOCKA*map_size+30, 170, 0, "Once again?");
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50+ROZMIAR_KLOCKA*map_size+30, 190, 0, "press any key");
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50+ROZMIAR_KLOCKA*map_size+30, 230, 0, "Want to quit?");
+	al_draw_text(font, al_map_rgb(255, 255, 255), 50+ROZMIAR_KLOCKA*map_size+30, 250, 0, "press Q or ESC");
 	al_flip_display();
 	while(!(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (ev.type == ALLEGRO_EVENT_KEY_DOWN)))
 		al_wait_for_event(event_queue, &ev);
-	if(ev.keyboard.keycode == ALLEGRO_KEY_Y)
-		goto restart;
+	switch(ev.keyboard.keycode)
+	{
+		case ALLEGRO_KEY_Q:
+		case ALLEGRO_KEY_ESCAPE: break;
+		default: goto restart;
+	}
 	fclose(f);
 	return 0;
 }
