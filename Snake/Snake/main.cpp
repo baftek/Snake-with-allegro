@@ -306,6 +306,7 @@ int main()
 	}
 
 restart:
+	snake_lenght = 4;
 	create_map();
 	al_start_timer(timer);
 	while(1)
